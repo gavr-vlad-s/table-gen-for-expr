@@ -1,4 +1,4 @@
-/*   
+/*
      Файл:    table-gen-for-expr.cpp
      Создано: 30 января 2016г.
      Автор:   Гаврилов Владимир Сергеевич
@@ -19,12 +19,13 @@ enum Category : uint16_t {
     Spaces,            Other,             Action_name_begin,
     Action_name_body,  Delimiters,        Dollar,
     Backslash,         Opened_square_br,  After_colon,
-    After_backslash,   Begin_expr,        End_expr
+    After_backslash,   Begin_expr,        End_expr,
+    Hat
 };
 
-const char32_t* action_name_begin_chars = 
+const char32_t* action_name_begin_chars =
     U"_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-const char32_t* action_name_body_chars = 
+const char32_t* action_name_body_chars =
     U"_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const char32_t* delimiters_chars = U"{}()|*+?";
 const char32_t* after_colon_chars = U"LRbdlnorx";
@@ -35,7 +36,7 @@ std::map<char32_t, uint16_t> table;
 void insert_char(const char32_t ch, Category category){
     auto it = table.find(ch);
     if(it != table.end()){
-        table[ch] |= 1U << category; 
+        table[ch] |= 1U << category;
     }else{
         table[ch] =  1U << category;
     }
@@ -57,7 +58,7 @@ std::u32string spaces_str(){
 
 void fill_table(){
     std::u32string s = spaces_str();
-    
+
     add_category(s.c_str(), Spaces);
     add_category(action_name_begin_chars, Action_name_begin);
     add_category(action_name_body_chars, Action_name_body);
@@ -69,6 +70,7 @@ void fill_table(){
     add_category(U"\\", Backslash);
     add_category(U"{", Begin_expr);
     add_category(U"}", End_expr);
+    add_category(U"^", Hat);
 }
 
 std::string show_table_elem(const std::pair<char32_t, uint16_t> e){
