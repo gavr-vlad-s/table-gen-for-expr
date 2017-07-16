@@ -17,6 +17,7 @@
 #include "char_conv.h"
 #include "map_as_vector.h"
 #include "segment.h"
+#include "group_pairs.h"
 
 enum Category : uint16_t {
     Spaces,            Other,             Action_name_begin,
@@ -85,36 +86,6 @@ static void fill_table(){
 //  * for in the array of the resulting values we can use the algorithm from the answer to exercise 6.2.24 of the book
 //  * Knuth D.E. The art of computer programming. Volume 3. Sorting and search. --- 2nd ed. --- Addison-Wesley, 1998.
 // */
-//
-// #define RandomAccessIterator typename
-// #define Callable             typename
-// #define Integral             typename
-// template<Integral K, typename V>
-// SegmentsV<K, V> group_pairs(const std::vector<std::pair<K, V>>& pairs){
-//     SegmentsV<K, V> result;
-//
-//     size_t num_of_elems        = pairs.size();
-//
-//     Segment_with_value<K,V> current;
-//
-//     current.bounds.lower_bound = pairs[0].first;
-//     current.bounds.upper_bound = pairs[0].first;
-//     current.value              = pairs[0].second;
-//
-//     for(size_t i = 1; i < num_of_elems; i++){
-//         auto p = pairs[i];
-//         if((current.value == p.second) && (current.bounds.upper_bound + 1 == p.first)){
-//             ++current.bounds.upper_bound;
-//         }else{
-//             result.push_back(current);
-//             current.bounds.lower_bound = pairs[i].first;
-//             current.bounds.upper_bound = pairs[i].first;
-//             current.value              = pairs[i].second;
-//         }
-//     }
-//     result.push_back(current);
-//     return result;
-// }
 //
 // struct Permutation_node{
 //     size_t index  = 0;
@@ -248,17 +219,17 @@ std::string show_char32(char32_t c){
     return oss.str();
 }
 
-// std::string show_table_elem(const Segment_with_value<char32_t, uint16_t> e){
-//     std::ostringstream oss;
-//     oss << "{{";
-//     auto     bounds = e.bounds;
-//     uint16_t val    = e.value;
-//
-//     oss << show_char32(bounds.lower_bound) << ", " << show_char32(bounds.upper_bound) << "}, ";
-//     oss << std::setw(4) << val << "}";
-//     return oss.str();
-// }
-//
+std::string show_table_elem(const Segment_with_value<char32_t, uint16_t> e){
+    std::ostringstream oss;
+    oss << "{{";
+    auto     bounds = e.bounds;
+    uint16_t val    = e.value;
+
+    oss << show_char32(bounds.lower_bound) << ", " << show_char32(bounds.upper_bound) << "}, ";
+    oss << std::setw(4) << val << "}";
+    return oss.str();
+}
+
 // static const std::string enum_def = R"~(enum Category : uint16_t {
 //     Spaces,            Other,             Action_name_begin,
 //     Action_name_body,  Delimiters,        Dollar,
@@ -398,11 +369,21 @@ void print_vector(const std::vector<std::pair<char32_t, uint16_t>>& v){
     putchar('\n');
 }
 
-int main(void) {
+void print_grouped_vector(const SegmentsV<char32_t, uint16_t>& gv){
+    for(const auto e : gv){
+        auto s = show_table_elem(e);
+        printf("%s ",s.c_str());
+    }
+    putchar('\n');
+}
+
+int main(){
     fill_table();
     print_filled_table();
-    auto v = map_as_vector(table);
+    auto v  = map_as_vector(table);
     print_vector(v);
+    auto gv = group_pairs(v);
+    print_grouped_vector(gv);
 //     print();
     return 0;
 }
