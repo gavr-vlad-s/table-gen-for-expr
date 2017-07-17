@@ -4,8 +4,8 @@ CXX         = g++
 CXXFLAGS    = -O3 -Wall -std=c++14
 BIN         = table-gen-for-expr
 vpath %.o build
-OBJ         = table-gen-for-expr.o char_conv.o
-LINKOBJ     = build/table-gen-for-expr.o build/char_conv.o
+OBJ         = table-gen-for-expr.o char_conv.o create_permutation_tree.o permutation_tree_to_permutation.o create_permutation.o
+LINKOBJ     = build/table-gen-for-expr.o build/char_conv.o build/create_permutation_tree.o build/permutation_tree_to_permutation.o build/create_permutation.o
 
 .PHONY: all all-before all-after clean clean-custom
 
