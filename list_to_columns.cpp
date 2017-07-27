@@ -7,7 +7,7 @@
              gavvs1977@yandex.ru
 */
 
-#include "../include/list_to_columns.h"
+#include "list_to_columns.h"
 #include <algorithm>
 
 std::vector<size_t> calculate_columns_width(size_t num_of_columns,
@@ -36,9 +36,11 @@ std::string string_list_to_columns(const std::vector<std::string>& l, const Form
     if(!num_of_strs || (num_of_columns <= 0)){
         return result;
     }
-    if(num_of_columns > num_of_strs){
-        num_of_columns = num_of_strs;
-    }
+
+    num_of_columns = std::min(num_of_columns, num_of_strs);
+//     if(num_of_columns > num_of_strs){
+//         num_of_columns = num_of_strs;
+//     }
     size_t     num_of_rows    = num_of_strs / num_of_columns;
     size_t     rest           = num_of_strs % num_of_columns;
 
@@ -74,7 +76,7 @@ std::string string_list_to_columns(const std::vector<std::string>& l, const Form
     }
     if(rest){
         Row    current_row;
-        size_t num_of_padded_spaces;
+        size_t num_of_padded_spaces = 0;
         for(size_t i = num_of_strs - rest; i < num_of_strs; i++){
             auto current_line = l[i];
             num_of_padded_spaces = column_width[i + rest - num_of_strs] - current_line.length();
