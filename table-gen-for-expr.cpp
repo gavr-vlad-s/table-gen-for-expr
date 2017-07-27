@@ -86,7 +86,7 @@ template<RandomAccessIterator DestIt, RandomAccessIterator SrcIt, Callable F>
 void permutate(DestIt dest_begin, SrcIt src_begin, SrcIt src_end, F f){
     size_t num_of_elems = src_end - src_begin;
     for(size_t i = 0; i < num_of_elems; ++i){
-        dest_begin[i] = src_begin[f(i)];
+        dest_begin[f(i)] = src_begin[i];
     }
 }
 
