@@ -23,6 +23,7 @@
 #include "permutation.h"
 #include "create_permutation.h"
 #include "myconcepts.h"
+#include "list_to_columns.h"
 
 enum Category : uint16_t {
     Spaces,            Other,             Action_name_begin,
@@ -105,6 +106,8 @@ std::string show_char32(char32_t c){
     std::ostringstream oss;
     if(c <= U' '){
         oss << std::setw(4) << static_cast<uint32_t>(c);
+    }else if(c == U'\\'){
+        oss << "U\'\\\'";
     }else{
         oss << "U'" << char32_to_utf8(c) << "'";
     }
@@ -215,26 +218,38 @@ std::string show_table(){
     std::string s = enum_def + templates + categories_table_top;
 
     auto        t = create_classification_table(table);
-
-    #define ELEMS_IN_GROUP 4
-    size_t num_of_elems   = t.size();
-    size_t num_of_triples = num_of_elems / ELEMS_IN_GROUP;
-    size_t rem            = num_of_elems % ELEMS_IN_GROUP;
-    auto   it             = t.begin();
-    for(size_t i = 0; i < num_of_triples; i++){
-        s += "    ";
-        for(int j = 0; j < ELEMS_IN_GROUP; j++, it++){
-            s += show_table_elem(*it) + ",  ";
-        }
-        s += "\n";
+    
+    Format      f;
+    f.indent                 = 4;
+    f.number_of_columns      = 3;
+    f.spaces_between_columns = 2;
+    
+    std::vector<std::string> elems;
+    
+    for(const auto& e : t){
+        elems.push_back(show_table_elem(e));
     }
-    s += "    ";
-    for(unsigned j = 0; j < rem; j++, it++){
-        s += show_table_elem(*it) + ",  ";
-    }
-    s.pop_back();
-    s.pop_back();
-    s += "\n};\n\n";
+    
+    s += string_list_to_columns(elems, f) + "};\n\n";
+    //#define ELEMS_IN_GROUP 4
+    //size_t num_of_elems   = t.size();
+    //size_t num_of_triples = num_of_elems / ELEMS_IN_GROUP;
+    //size_t rem            = num_of_elems % ELEMS_IN_GROUP;
+    //auto   it             = t.begin();
+    //for(size_t i = 0; i < num_of_triples; i++){
+        //s += "    ";
+        //for(int j = 0; j < ELEMS_IN_GROUP; j++, it++){
+            //s += show_table_elem(*it) + ",  ";
+        //}
+        //s += "\n";
+    //}
+    //s += "    ";
+    //for(unsigned j = 0; j < rem; j++, it++){
+        //s += show_table_elem(*it) + ",  ";
+    //}
+    //s.pop_back();
+    //s.pop_back();
+    //s += "\n};\n\n";
 
     s += size_const(num_of_elems) + get_categories_set_func;
     return s;
