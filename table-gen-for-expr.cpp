@@ -39,7 +39,7 @@ static const char32_t* action_name_body_chars =
     U"_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 static const char32_t* delimiters_chars = U"{}()|*+?";
 static const char32_t* after_colon_chars = U"LRbdlnorx";
-static const char32_t* after_backslash_chars = U"(){}[]n$|*+\?\\";
+static const char32_t* after_backslash_chars = U"^\"(){}[]n$|*+\?\\";
 
 std::map<char32_t, uint16_t> table;
 
@@ -195,7 +195,7 @@ std::pair<bool, size_t> knuth_find(I it_begin, I it_end, K key)
 )~";
 
 static const std::string categories_table_top =
-    "static const Segment_with_value<char32_t, uint16_t> categories_table[] = {\n";
+    "static const Segment_with_value<char32_t, uint64_t> categories_table[] = {\n";
 
 static std::string size_const(size_t n){
     std::string result;
